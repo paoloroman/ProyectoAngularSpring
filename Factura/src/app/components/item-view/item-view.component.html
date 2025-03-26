@@ -1,0 +1,27 @@
+<h3>Detalle de la Factura</h3>
+@if (items.length > 0 ) {
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of items; track $index) {
+        <tr>
+            <td> {{item.id}} </td>
+            <td> {{item.producto}} </td>
+            <td> {{item.precio}} </td>
+            <td> {{item.cantidad}} </td>
+        </tr>
+        }
+    </tbody>
+</table>
+} @else {
+<div class="alert alert-warning">
+    No tiene items la factura!
+</div>
+}
