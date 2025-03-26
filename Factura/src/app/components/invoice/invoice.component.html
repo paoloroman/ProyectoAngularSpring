@@ -5,22 +5,22 @@
         </div>
 
         <div class="card-body">
-            <invoice-view [id]="factura.id" [nombre]="factura.nombre"></invoice-view>
+            <invoice-view [id]="factura.id" [nombre]="factura.nombre" />
 
             <div class="row my-5">
                 <div class="col">
-                    <client-view [cliente]="factura.cliente"></client-view>
-                    
+                    <client-view [cliente]="factura.cliente" />
+
                 </div>
 
                 <div class="col">
-                    <compannia-view [compannia]="factura.compannia"></compannia-view>
+                    <compannia-view [compannia]="factura.compannia" />
                 </div>
             </div>
 
-            <item-view [items]="factura.items"></item-view>
-                
-            
+            <item-view [items]="factura.items" (eventoEliminar)="eliminarItem($event)"/>
+            <total [total]="factura.total"/>
+
         </div>
     </div>
 </div>

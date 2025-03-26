@@ -4,8 +4,7 @@ import { Compannia } from '../../models/compannia';
 @Component({
   selector: 'compannia-view',
   imports: [],
-  templateUrl: './compannia-view.component.html',
-  styleUrl: './compannia-view.component.css'
+  templateUrl: './compannia-view.component.html'
 })
 export class CompanniaViewComponent {
 //Input porque cojo el dato del padre que es invoice 

@@ -16,12 +16,22 @@ export class FacturaService {
     return {... this.factura, total}; // el ... es para clonar la instancia factura en otro objeto
   }
 
+  eliminar(id : number) : Factura{
+
+    this.factura.items = this.factura.items.filter(item => item.id != id);
+
+    //recalculamos el total una vez eliminado el item
+    const total = this.calcularTotal();
+
+    return {... this.factura, total};
+  }
+
   calcularTotal(): number {
     let total = 0;
 
     //Recorremos los items para calcular el total
     this.factura.items.forEach(item => {
-      total += item.total(); //un metodo del modelo 
+      total += item.precio * item.cantidad; //un metodo del modelo 
     });
 
     return total;

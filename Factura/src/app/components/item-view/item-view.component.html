@@ -7,6 +7,7 @@
             <th>Producto</th>
             <th>Precio</th>
             <th>Cantidad</th>
+            <th>Eliminar</th>
         </tr>
     </thead>
     <tbody>
@@ -16,6 +17,8 @@
             <td> {{item.producto}} </td>
             <td> {{item.precio}} </td>
             <td> {{item.cantidad}} </td>
+            <td><button class="btn btn-danger btn-sm" (click)="eliminarItem(item.id)">Eliminar</button>
+            </td>
         </tr>
         }
     </tbody>
