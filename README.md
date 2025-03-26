@@ -69,7 +69,7 @@ El frontend estará disponible en `http://localhost:4200`
 ✅ Implementación de buenas prácticas en código y estructura.  
 
 ## 📬 Contacto
-Si te interesa mi trabajo y quieres colaborar o hacerme alguna sugerencia, puedes contactarme a través de **[LinkedIn](https://www.linkedin.com/in/tu-usuario/)** o **[GitHub](https://github.com/tu-usuario/)**.
+Si te interesa mi trabajo y quieres colaborar o hacerme alguna sugerencia, puedes contactarme a través de **[LinkedIn](https://www.linkedin.com/in/paolo-roman-sandoya)** o **[GitHub](https://github.com/paoloroman)**.
 
 ---
 ⭐ Si te gusta este proyecto, no olvides darle un **star** en GitHub. ¡Gracias! ⭐
