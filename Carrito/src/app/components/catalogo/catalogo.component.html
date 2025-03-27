@@ -1,0 +1,7 @@
+<div class="row">
+    @for (producto of productosPadre; track $index) {
+        <div class="col-4 my-4">
+            <tarjetas [producto]="producto" (productoEmitido)="annadir($event)"/>
+        </div>
+    }
+</div>

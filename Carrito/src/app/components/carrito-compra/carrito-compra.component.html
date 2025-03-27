@@ -1,0 +1,12 @@
+<h1>Catálogo de productos</h1>
+
+<catalogo [productosPadre]="productos" (productoEmitidoCatalogo)="annadirACarro($event)" />
+@if (items.length > 0 ) {
+
+    <carro [items]="items" (idProductoEmitido)="eliminarProducto($event)" />
+
+}@else {
+
+    <div class="alert alert-warning">No hay elementos en el carro</div>
+
+}
