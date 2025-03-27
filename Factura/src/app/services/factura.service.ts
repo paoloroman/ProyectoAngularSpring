@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Factura } from '../models/factura';
 import { facturaData } from '../data/factura.data';
+import { Item } from '../models/item';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +13,25 @@ export class FacturaService {
   constructor() { }
 
   getFactura(): Factura {
-    const total  = this.calcularTotal();
-    return {... this.factura, total}; // el ... es para clonar la instancia factura en otro objeto
+    const total = this.calcularTotal();
+    return { ... this.factura, total }; // el ... es para clonar la instancia factura en otro objeto
   }
 
-  eliminar(id : number) : Factura{
+  annadir(item: Item): Factura {
+    this.factura.items = [... this.factura.items, item];
+    const total = this.calcularTotal();
+
+    return { ... this.factura, total };
+  }
+
+  eliminar(id: number): Factura {
 
     this.factura.items = this.factura.items.filter(item => item.id != id);
 
     //recalculamos el total una vez eliminado el item
     const total = this.calcularTotal();
 
-    return {... this.factura, total};
+    return { ... this.factura, total };
   }
 
   calcularTotal(): number {

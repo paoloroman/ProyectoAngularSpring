@@ -21,6 +21,7 @@
             <item-view [items]="factura.items" (eventoEliminar)="eliminarItem($event)"/>
             <total [total]="factura.total"/>
 
+            <form-view (addItemEvent)="addItem($event)"/>
         </div>
     </div>
 </div>

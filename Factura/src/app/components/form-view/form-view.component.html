@@ -1,0 +1,37 @@
+
+<form  class="w-50" (ngSubmit)="enviarDatos(formulario)" #formulario="ngForm"> <!--Le damos una etiqueta propia de Angular para que el boton no se pueda pulsar si los campos no cumplen lo requerido-->
+    <label >Producto:</label>
+    <input type="text" name="producto" placeholder="producto" class="form-control m-3" [(ngModel)]="item.producto" required minlength="5"
+    #product="ngModel"><!-- Para mostrar mensjaes de error -->
+    @if (product.invalid && (product.dirty || product.touched)) {
+        @if (product.errors!['required']) {
+            <div class="text-danger mx-3">Nombre del producto es obligatorio !</div>
+        }
+        @if (product.errors!['minlength']) {
+            <div class="text-danger mx-3">Nombre del producto tiene que tener al menos 5 caracteres !</div>
+        }
+    }
+    <label >Precio</label>
+    <input type="number" name="precio" placeholder="precio" class="form-control m-3" [(ngModel)]="item.precio" required min="15"
+    #precio="ngModel">
+    @if (precio.invalid && (precio.dirty || precio.touched)) {
+        @if (precio.errors!['required']) {
+            <div class="text-danger mx-3">Nombre del precio es obligatorio !</div>
+        }
+        @if (precio.errors!['min']) {
+            <div class="text-danger mx-3">El precio debe ser mínimo de 15€!</div>
+        }
+    }
+    <label >Cantidad</label>
+    <input type="number" name="cantidad" placeholder="cantidad" class="form-control m-3" [(ngModel)]="item.cantidad" required  min="1"
+    #cantidad="ngModel">
+    @if (cantidad.invalid && (cantidad.dirty || cantidad.touched)) {
+        @if (cantidad.errors!['required']) {
+            <div class="text-danger mx-3">Nombre del cantidad es obligatorio !</div>
+        }
+        @if (cantidad.errors!['min']) {
+            <div class="text-danger mx-3">El cantidad debe ser mínimo de 1!</div>
+        }
+    }
+    <button class="btn btn-primary m-3" [disabled]="formulario.invalid">Nuevo Item</button> <!-- Le damos al boton el metodo invalid de Angular para que deshabilite el fomrulario-->
+</form>
