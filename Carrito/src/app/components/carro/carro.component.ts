@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { ItemCarro } from '../../models/carro';
+import { Router } from '@angular/router';
+import { CompartirDataService } from '../../services/compartir-data.service';
 
 @Component({
   selector: 'carro',
@@ -9,11 +11,19 @@ import { ItemCarro } from '../../models/carro';
 })
 export class CarroComponent {
 
-  @Input() items : ItemCarro[] = []; 
+  items : ItemCarro[] = []; 
 
-  @Output()  idProductoEmitido = new EventEmitter();
+
+  total : number = 0;
+
+  constructor(private router : Router , private CompartirDataService : CompartirDataService){
+    this.items = this.router.getCurrentNavigation()?.extras.state!['items'];
+    this.total = this.router.getCurrentNavigation()?.extras.state!['total'];
+  }
 
   eliminarItem(id:number){
-    this.idProductoEmitido.emit(id);
+    this.CompartirDataService.idProductoEmitido.emit(id);
   }
+
+  
 }

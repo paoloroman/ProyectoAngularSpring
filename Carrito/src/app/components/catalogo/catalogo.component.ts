@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { Producto } from '../../models/producto';
 import { TarjetasComponent } from '../tarjetas/tarjetas.component';
+import { Router } from '@angular/router';
+import { CompartirDataService } from '../../services/compartir-data.service';
 
 @Component({
   selector: 'catalogo',
@@ -12,12 +14,15 @@ import { TarjetasComponent } from '../tarjetas/tarjetas.component';
 })
 export class CatalogoComponent {
 
-  @Input() productosPadre! : Producto[];
+  productos! : Producto[];
 
-  @Output() productoEmitidoCatalogo : EventEmitter<Producto> = new EventEmitter();
+ 
 
+  constructor (private router : Router, private compartirDataService : CompartirDataService){
+    this.productos = this.router.getCurrentNavigation()?.extras.state!['productos'];
+  }
   annadir(producto : Producto) : void{
 
-    this.productoEmitidoCatalogo.emit(producto);
+    this.compartirDataService.productoEmitidoCatalogo.emit(producto);
   }
 }
