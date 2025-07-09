@@ -5,6 +5,9 @@
                 <h5 class="card-title">Carrito</h5>
             </div>
             <div class="card-body">
+                @if(items.length > 0 ){
+
+                
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -34,6 +37,9 @@
                         </tr>
                     </tfoot>
                 </table>
+            } @else{
+                <div class="alert alert-warning">El carrito esta Vacío</div>
+            }
             </div>
         </div>
     </div>

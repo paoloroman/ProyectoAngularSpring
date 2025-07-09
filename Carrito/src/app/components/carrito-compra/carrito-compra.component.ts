@@ -3,15 +3,16 @@ import { ProductoService } from '../../services/producto.service';
 import { Producto } from '../../models/producto';
 import { ItemCarro } from '../../models/carro';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { CompartirDataService } from '../../services/compartir-data.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'carrito-compra',
   imports: [
     NavBarComponent,
     RouterOutlet
-],
+  ],
   templateUrl: './carrito-compra.component.html',
   styleUrl: './carrito-compra.component.css'
 })
@@ -24,18 +25,21 @@ export class CarritoCompraComponent implements OnInit {
   total: number = 0;
 
 
-  constructor(private servicio: ProductoService , private compartirDataService : CompartirDataService) { }
+  constructor(
+    private servicio: ProductoService,
+    private compartirDataService: CompartirDataService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.productos = this.servicio.findAll();
-    this.items = JSON.parse(sessionStorage.getItem('carrito') || '[]') ; 
+    this.items = JSON.parse(sessionStorage.getItem('carrito') || '[]');
     this.calcularTotal();
     this.annadirACarro();
     this.eliminarProducto();
   }
 
   annadirACarro(): void {
-    this.compartirDataService.productoEmitidoCatalogo.subscribe(producto =>{
+    this.compartirDataService.productoEmitidoCatalogo.subscribe(producto => {
       const idAux = this.items.find(item => {
         return item.producto.id === producto.id;
       });
@@ -55,18 +59,60 @@ export class CarritoCompraComponent implements OnInit {
       }
       this.calcularTotal();
       this.guardarSesion();
+      /* Para redirigir a la pagina utilizamos router  */
+      this.router.navigate(['/carrito'], {
+        state: { items: this.items, total: this.total } /* Son los datos que pasamos para redirigir a la pagina que hemos puesto en la ruta */
+      });
+      /* Con la libreria sweetalert2 podemos hacer un mensaje mas llamativo con su metodo fire */
+      Swal.fire({
+        title:'Compra',
+        text : 'Nuevo producto agregado',
+        icon : 'success'
+      });
     });
-    
+
   }
 
   eliminarProducto(): void {
-    this.compartirDataService.idProductoEmitido.subscribe(id =>{
-      console.log(id+' Se ha ejecutado el compartirDataService') ;
-      this.items = this.items.filter(item => item.producto.id !== id); // si es distinto crea un nuevo array y si es el mismo id no lo pione en el array 
-      this.calcularTotal();
-      this.guardarSesion();
-    })
-   
+    this.compartirDataService.idProductoEmitido.subscribe(id => {
+      console.log(id + ' Se ha ejecutado el compartirDataService');
+       /*Misma funcionalidad que en agregar a carrito pero aqui lo que 
+        hacemos es preguntar si de verdad quiere eliminar del carrito */
+        Swal.fire({
+          title:'¿Estas seguro?',
+          text : '¿Quieres eliminar el producto?',
+          icon : 'warning',
+          showCancelButton : true,
+          confirmButtonColor : '#3085d6',
+          cancelButtonColor :'#d33',
+          confirmButtonText : 'Si,eliminar!'
+        }).then((result) =>{
+          if(result.isConfirmed){
+            this.items = this.items.filter(item => item.producto.id !== id); // si es distinto crea un nuevo array y si es el mismo id no lo pione en el array 
+            this.calcularTotal();
+            this.guardarSesion();
+            /*Esta linea lo que hace es que actualiza la misma pagina, como si fuera un refetch */
+            this.router.navigateByUrl('/', { skipLocationChange: true })
+              .then(() => {
+                /* Para redirigir a la pagina utilizamos router  */
+                this.router.navigate(['/carrito'], {
+                  state: { items: this.items, total: this.total } /* Son los datos que pasamos para redirigir a la pagina que hemos puesto en la ruta */
+                });
+              })
+
+            Swal.fire({
+              title : 'Eliminado',
+              text : 'Se ha eliminaodo exitósamente',
+              icon : 'success'
+            });
+          }
+        });
+
+      
+       
+    });
+
+
   }
 
   calcularTotal(): void {

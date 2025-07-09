@@ -4,6 +4,11 @@ import { CatalogoComponent } from './components/catalogo/catalogo.component';
 
 export const routes: Routes = [
     {
+        path : '',
+        redirectTo : '/catalogo',
+        pathMatch : 'full'
+    },
+    {
         path : 'carrito',
         component : CarroComponent
     },
