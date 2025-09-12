@@ -1,6 +1,6 @@
 import { Factura } from "../models/factura";
 
-export const facturaData : Factura = {
+export const facturaData : any = {
     id: 1,
     nombre: 'Componentes de PC',
     cliente: {
