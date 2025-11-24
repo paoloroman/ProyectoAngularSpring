@@ -3,6 +3,8 @@ package com.springboot.backend.paolo.userapp.user_backend.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,12 @@ public class UserServiceImplement implements UserService{
     }
 
     @Override
+    @Transactional(readOnly = true )
+    public Page<User> findAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
+    }
+
+    @Override
     /* Debe ser Transactional por que es solo para lectura es decir consultas SELECT */
     @Transactional(readOnly = true )
     public List<User> findAll() {
@@ -49,6 +57,7 @@ public class UserServiceImplement implements UserService{
         // TODO Auto-generated method stub
         return this.repository.save(user);
     }
+
 
 
 }

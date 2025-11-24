@@ -1,37 +1,58 @@
-import { Component, EventEmitter} from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { User } from '../../models/user';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { SharingDataService } from '../../services/sharing-data.service';
+import { PaginatorComponent } from '../paginator/paginator.component';
 
 @Component({
   selector: 'user',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, PaginatorComponent],
   templateUrl: './user.component.html'
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
 
   title: string = 'Listado de usuarios!';
-  
+
+
   users: User[] = [];
+
+  paginator : any = [];
 
   constructor(
     private service: UserService,
     private sharingData: SharingDataService,
-    private router: Router) {
+    private router: Router,
+    private route: ActivatedRoute) {
     if (this.router.getCurrentNavigation()?.extras.state) {
       this.users = this.router.getCurrentNavigation()?.extras.state!['users'];
+      this.paginator = this.router.getCurrentNavigation()?.extras.state!['paginator'];
     } else {
       this.service.findAll().subscribe(users => this.users = users);
     }
   }
-  
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+
+      const page = +(params.get('page') || '0');
+
+      this.service.findAllPageable(page).subscribe(pageable => {
+
+        this.users = pageable.content as User[];
+
+        this.paginator = pageable;
+
+        this.sharingData.pageUserEventEmitter.emit({users : this.users, paginator: this.paginator});
+      });
+    })
+  }
+
   onRemoveUser(id: number): void {
-    this.sharingData.idUserEventEmitter.emit(id);   
+    this.sharingData.idUserEventEmitter.emit(id);
   }
 
   onSelectedUser(user: User): void {
-    this.router.navigate(['/users/edit', user.id], {state: {user}});
+    this.router.navigate(['/users/edit', user.id], { state: { user } });
   }
 }
