@@ -3,6 +3,7 @@ package com.springboot.backend.paolo.userapp.user_backend.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.backend.paolo.userapp.user_backend.models.User;
+import com.springboot.backend.paolo.userapp.user_backend.models.UserRequest;
 import com.springboot.backend.paolo.userapp.user_backend.services.UserService;
 
 import jakarta.validation.Valid;
@@ -72,22 +73,15 @@ public class UserController {
 
    
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult resultado, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult resultado, @PathVariable Long id) {
         
         if(resultado.hasErrors()){
             return getErrores(resultado);
         }
-        Optional<User> userOptional = service.findById(id);
+        Optional<User> userOptional = service.update(user,id);
 
         if(userOptional.isPresent()){
-            User userBd = userOptional.get();
-            userBd.setEmail(user.getEmail());
-            userBd.setApellidos(user.getApellidos());
-            userBd.setNombre(user.getNombre());
-            userBd.setUsuario(user.getUsuario());
-            userBd.setPwd(user.getPwd());
-
-            return ResponseEntity.ok(service.save(user));
+            return ResponseEntity.ok(userOptional.orElseThrow());
         }
         return ResponseEntity.notFound().build();
         

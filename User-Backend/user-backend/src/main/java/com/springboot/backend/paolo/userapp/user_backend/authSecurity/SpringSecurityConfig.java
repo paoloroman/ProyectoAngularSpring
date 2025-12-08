@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.springboot.backend.paolo.userapp.user_backend.authSecurity.filter.JwtAuthenticationFilter;
+import com.springboot.backend.paolo.userapp.user_backend.authSecurity.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -34,8 +35,7 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
-        return http.authorizeHttpRequests( auth ->
-            auth
+        return http.authorizeHttpRequests( auth -> auth
             .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/page/{page}").permitAll()
             .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasAnyRole("USER","ADMIN") // permito ver detalle a admin y usuario
             .requestMatchers(HttpMethod.POST,"/api/users").hasRole("ADMIN")
@@ -43,6 +43,7 @@ public class SpringSecurityConfig {
             .requestMatchers(HttpMethod.DELETE,"/api/users/{id}").hasRole("ADMIN") // solo podemos realizar el post el admin
             .anyRequest().authenticated())
             .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+            .addFilter(new JwtValidationFilter(authenticationManager()))
             .csrf(config -> config.disable()) //como tengo un api se tiene que deshabilitar ya qaue no es solo con Spring el fomrulario sino es con Angular
             .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
