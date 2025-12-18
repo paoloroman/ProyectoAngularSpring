@@ -69,6 +69,7 @@
                     }
                     }-->
                 </div>
+                @if( user.id == 0){
                 <div>
                     <input placeholder="Password" name="password" type="password" [(ngModel)]="user.pwd"
                         class="form-control my-2" #password="ngModel">
@@ -90,7 +91,7 @@
                     }
                 }-->
                 </div>
-
+            }
                 <div>
                     <button type="submit" class="btn btn-primary m-2" > <!-- [disabled]="userForm.invalid" -->
                         {{(user.id > 0)? 'Update': 'Create'}}

@@ -79,10 +79,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String usuario = user.getUsername();
         
         Collection<? extends GrantedAuthority> roles  = authResult.getAuthorities();
-
+        
+        boolean isAdmin = roles.stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
         //Clame del token
         Claims claims = Jwts.claims()
                             .add("authorities", new ObjectMapper().writeValueAsString(roles))
+                            .add("usuario",usuario)
+                            .add("isAdmin",isAdmin)
                             .build();//Vamos a pasar a String para luego convertirlo a JSON 
         String jwt = Jwts.builder()
                 .subject(usuario)
