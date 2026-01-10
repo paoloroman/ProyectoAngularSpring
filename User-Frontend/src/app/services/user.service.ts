@@ -19,6 +19,10 @@ export class UserService {
     return this.http.get<User[]>(this.urlBackend);
   }
 
+  findAllPageable(page : number): Observable<any> {  
+    return this.http.get<any>(`${this.urlBackend}/page/${page}`); 
+  }
+
   findById(id: number): Observable<User> {
     return this.http.get<User>(`${this.urlBackend}/${id}`); // `` usamos Backticks en vez de concatrenar con + +
   }

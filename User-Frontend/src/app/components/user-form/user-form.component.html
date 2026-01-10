@@ -1,41 +1,42 @@
 <div class="card">
-        <div class="card-content">
-            <div class="card-header">
-                <h5 class="card-title">Form {{(user.id > 0)? 'Update': 'Create'}} User</h5>
-            </div>
-            <div class="card-body">
+    <div class="card-content">
+        <div class="card-header">
+            <h5 class="card-title">Form {{(user.id > 0)? 'Update': 'Create'}} User</h5>
+        </div>
+        <div class="card-body">
 
-                <form (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">
+            <form (ngSubmit)="onSubmit(userForm)" #userForm="ngForm">
 
-                    <div>
-                        <input placeholder="Name" name="name" [(ngModel)]="user.nombre" class="form-control my-2" required
-                            #name="ngModel">
+                <div>
+                    <input placeholder="Name" name="name" [(ngModel)]="user.nombre" class="form-control my-2"
+                        #name="ngModel">
+                    <!-- required esto lo quitamos para que java lo valide la entrada desde angular-->
 
-                        @if (name.invalid && (name.dirty || name.touched)) {
-                        @if(name.errors!['required']){
-                        <div class="text-danger">
-                            Nombre es requerido
-                        </div>
-                        }
-                        }
-                    </div>
-                    <div>
-                        <input placeholder="Lastname" name="lastname" [(ngModel)]="user.apellidos" required
-                            class="form-control my-2" #lastname="ngModel">
+                    @if(errors?.nombre){
+                    <div class="text-danger">{{ errors.nombre }}</div>
+                    }
 
-                        @if (lastname.invalid && (lastname.dirty || lastname.touched)) {
-                        @if(lastname.errors!['required']){
-                        <div class="text-danger">
-                            Los apellidos es requerido
-                        </div>
-                        }
-                        }
-                    </div>
+                </div>
+                <div>
+                    <input placeholder="Lastname" name="lastname" [(ngModel)]="user.apellidos" class="form-control my-2"
+                        #lastname="ngModel">
+                    <!-- required esto lo quitamos para que java lo valide la entrada desde angular-->
+                    @if(errors?.apellidos){
+                    <div class="text-danger">{{ errors.apellidos }}</div>
+                    }
+                </div>
 
-                    <div>
-                        <input placeholder="Email" name="email" [(ngModel)]="user.email" class="form-control my-2"
-                            type="email" required email #email="ngModel">
-                        @if (email.invalid && (email.dirty || email.touched)) {
+                <div>
+                    <input placeholder="Email" name="email" [(ngModel)]="user.email" class="form-control my-2"
+                        type="email" #email="ngModel">
+                    <!-- required email esto lo quitamos para que java lo valide la entrada desde angular-->
+                    @if(errors?.email){
+                    <div class="text-danger">{{ errors.email }}</div>
+                    }
+
+
+
+                    <!--@if (email.invalid && (email.dirty || email.touched)) {
                         @if(email.errors!['required']){
                         <div class="text-danger">
                             El email es requerido
@@ -46,53 +47,63 @@
                             El email no tiene formato correcto!
                         </div>
                         }
-                        }
-                    </div>
-                    <div>
-                        <input placeholder="Username" name="username" [(ngModel)]="user.usuario"
-                            class="form-control my-2" required minlength="8" #username="ngModel">
-                        @if (username.invalid && (username.dirty || username.touched)) {
-                        @if(username.errors!['required']){
-                        <div class="text-danger">
-                            El usuario es requerido
-                        </div>
-                        }
-                        @if(username.errors!['minlength']){
-                        <div class="text-danger">
-                            Usuario debe de tener al menos 8 caracteres!
-                        </div>
-                        }
-                        }
-                    </div>
-                    <div>
-                        <input placeholder="Password" name="password" type="password" [(ngModel)]="user.pwd"
-                            class="form-control my-2" required minlength="6" #password="ngModel">
-                        @if (password.invalid && (password.dirty || password.touched)) {
-                        @if(password.errors!['required']){
-                        <div class="text-danger">
-                            El password es requerido
-                        </div>
-                        }
-                        @if(password.errors!['minlength']){
-                        <div class="text-danger">
-                            Password debe de tener al menos 6 caracteres!
-                        </div>
-                        }
-                        }
-                    </div>
+                    } -->
+                </div>
+                <div>
+                    <input placeholder="Username" name="username" [(ngModel)]="user.usuario" class="form-control my-2"
+                        #username="ngModel"><!-- required minlength="8" esto lo quitamos para que java lo valide la entrada desde angular-->
 
-                    <div>
-                        <button type="submit" class="btn btn-primary m-2" [disabled]="userForm.invalid">
-                            {{(user.id > 0)? 'Update': 'Create'}}
-                        </button>
-
-                        <button type="button" class="btn btn-secondary my-2" (click)="onClear(userForm)">
-                            Clear
-                        </button>
+                        @if(errors?.usuario){
+                        <div class="text-danger">{{ errors.usuario }}</div>
+                        }
+                   <!-- @if (username.invalid && (username.dirty || username.touched)) {
+                    @if(username.errors!['required']){
+                    <div class="text-danger">
+                        El usuario es requerido
                     </div>
+                    }
+                    @if(username.errors!['minlength']){
+                    <div class="text-danger">
+                        Usuario debe de tener al menos 8 caracteres!
+                    </div>
+                    }
+                    }-->
+                </div>
+                @if( user.id == 0){
+                <div>
+                    <input placeholder="Password" name="password" type="password" [(ngModel)]="user.pwd"
+                        class="form-control my-2" #password="ngModel">
+                    <!-- required minlength="6" esto lo quitamos para que java lo valide la entrada desde angular-->
 
-                </form>
-            </div>
+                    @if(errors?.pwd){
+                        <div class="text-danger">{{ errors.pwd }}</div>
+                    }
+                   <!-- @if (password.invalid && (password.dirty || password.touched)) {
+                    @if(password.errors!['required']){
+                    <div class="text-danger">
+                        El password es requerido
+                    </div>
+                    }
+                    @if(password.errors!['minlength']){
+                    <div class="text-danger">
+                        Password debe de tener al menos 6 caracteres!
+                    </div>
+                    }
+                }-->
+                </div>
+            }
+                <div>
+                    <button type="submit" class="btn btn-primary m-2" > <!-- [disabled]="userForm.invalid" -->
+                        {{(user.id > 0)? 'Update': 'Create'}}
+                    </button>
 
+                    <button type="button" class="btn btn-secondary my-2" (click)="onClear(userForm)">
+                        Clear
+                    </button>
+                </div>
+
+            </form>
         </div>
+
+    </div>
 </div>

@@ -1,0 +1,86 @@
+package com.springboot.backend.paolo.userapp.user_backend.authSecurity;
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import com.springboot.backend.paolo.userapp.user_backend.authSecurity.filter.JwtAuthenticationFilter;
+import com.springboot.backend.paolo.userapp.user_backend.authSecurity.filter.JwtValidationFilter;
+
+@Configuration
+public class SpringSecurityConfig {
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
+    @Bean //administra la autentificacion
+    AuthenticationManager authenticationManager() throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
+    };
+
+    //ahora la clave
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+
+        return http.authorizeHttpRequests( auth -> auth
+            .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/page/{page}").permitAll()
+            .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasAnyRole("USER","ADMIN") // permito ver detalle a admin y usuario
+            .requestMatchers(HttpMethod.POST,"/api/users").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE,"/api/users/{id}").hasRole("ADMIN") // solo podemos realizar el post el admin
+            .anyRequest().authenticated())
+            .cors(cors -> cors.configurationSource(configurationSource())) 
+            .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+            .addFilter(new JwtValidationFilter(authenticationManager()))
+            .csrf(config -> config.disable()) //como tengo un api se tiene que deshabilitar ya qaue no es solo con Spring el fomrulario sino es con Angular
+            .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
+            //Con esto protegemos todas las rutas menos las que hemos puesto publicas
+
+    }
+
+    @Bean
+    CorsConfigurationSource configurationSource(){
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));//debemos cambiarlo a una ruta de producción
+        config.setAllowedMethods(Arrays.asList("POST","GET","PUT","DELETE"));
+        config.setAllowedHeaders(Arrays.asList("Authorization","Content-Type"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+
+    }
+
+    //Nos va a ayudar para Angular o React
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter(){
+        FilterRegistrationBean<CorsFilter> corsBean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(this.configurationSource()));
+
+        corsBean.setOrder(Ordered.HIGHEST_PRECEDENCE);//le damos la prioridad mas alta
+        return corsBean;
+    }
+} 
